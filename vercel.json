@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/c/:fichier", "destination": "https://files.catbox.moe/:fichier" },
+    { "source": "/catbox/api.php", "destination": "https://catbox.moe/user/api.php" },
+    { "source": "/noelshack/envoi.json", "destination": "https://www.noelshack.com/envoi.json" },
+    { "source": "/noelshack/telecharger.json", "destination": "https://www.noelshack.com/telecharger.json" },
+    { "source": "/i/:chemin*", "destination": "https://image.noelshack.com/fichiers/:chemin*" },
+    { "source": "/m/:chemin*", "destination": "https://image.noelshack.com/minis/:chemin*" },
+    { "source": "/v/:chemin*", "destination": "/view" },
+    { "source": "/upload-photo", "destination": "/" },
+    { "source": "/upload-gif", "destination": "/" },
+    { "source": "/upload-video", "destination": "/" },
+    { "source": "/upload-screenshot", "destination": "/" },
+    { "source": "/bulk-upload", "destination": "/" }
+  ],
+  "headers": [
+    { "source": "/c/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/i/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/m/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+  ]
+}

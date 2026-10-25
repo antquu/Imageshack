@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr" data-titre-en="ImageShack - Free image and video hosting" data-description-en="ImageShack: upload and share your images and videos for free in one click. No sign-up, short links, BBCode and HTML ready to paste.">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="author" content="antquu">
+  <title>ImageShack - Hébergement d'images et vidéos gratuit</title>
+  <meta name="description" content="ImageShack : hébergez et partagez vos images et vidéos gratuitement en un clic. Sans inscription, avec liens courts, BBCode et HTML prêts à coller.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ImageShack">
+  <meta property="og:title" content="ImageShack - Hébergement d'images et vidéos gratuit">
+  <meta property="og:description" content="ImageShack : hébergez et partagez vos images et vidéos gratuitement en un clic. Sans inscription, avec liens courts, BBCode et HTML prêts à coller.">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="/papillon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/langue.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "ImageShack",
+    "applicationCategory": "MultimediaApplication",
+    "operatingSystem": "Web",
+    "inLanguage": ["fr", "en"],
+    "description": "Hébergement d'images et vidéos gratuit et sans inscription. Free image and video hosting, no sign-up.",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+    "author": { "@type": "Person", "name": "Antoine Adam" }
+  }
+  </script>
+</head>
+<body>
+<div id="haut"></div>
+
+<main class="page" id="contenu">
+  <aside id="col-gauche"></aside>
+
+  <section id="col-centre">
+    <div id="upload" class="carte">
+      <div id="zone-depot" tabindex="0" role="button" aria-label="Choisir des images à envoyer">
+        <h1 class="depot-titre"><span data-l="fr">Hébergez vos <span>images</span> et <span>vidéos</span></span><span data-l="en">Upload your <span>images</span> and <span>videos</span></span></h1>
+        <p class="depot-sous"><span data-l="fr">Gratuit, rapide, sans inscription.<br>Déposez vos images et vidéos ici ou cliquez pour parcourir.</span><span data-l="en">Free, fast, no sign-up.<br>Drop your images and videos here or click to browse.</span></p>
+        <span class="btn-bleu"><span data-l="fr">Parcourir...</span><span data-l="en">Browse...</span></span>
+        <p class="depot-petit"><span data-l="fr">Images et vidéos (MP4, WEBM, MOV...) &middot; 200 Mo max &middot; Ctrl+V pour coller</span><span data-l="en">Images and videos (MP4, WEBM, MOV...) &middot; 200 MB max &middot; Ctrl+V to paste</span></p>
+        <input type="file" id="input-fichiers" accept="image/*,video/*,.psd,.tif,.tiff,.mkv,.mov,.avi" multiple hidden>
+      </div>
+    </div>
+
+    <div id="file" class="carte" hidden>
+      <div class="titre-section">
+        <h2><span data-l="fr">Vos envois</span><span data-l="en">Your uploads</span></h2>
+        <span class="titre-actions">
+          <a href="#" id="copier-tout"><span data-l="fr">Copier tous les liens</span><span data-l="en">Copy all links</span></a> |
+          <a href="#" id="effacer-liste"><span data-l="fr">Effacer la liste</span><span data-l="en">Clear the list</span></a>
+        </span>
+      </div>
+      <ul id="liste-envois"></ul>
+    </div>
+
+    <div class="carte duo">
+      <div>
+        <h2 class="titre-orange"><span data-l="fr">Les choix du jour</span><span data-l="en">Today's picks</span></h2>
+        <ul class="puces">
+          <li><a href="/upload-video"><span data-l="fr">Hébergez vos vidéos, jusqu'à 200 Mo</span><span data-l="en">Upload your videos, up to 200 MB</span></a></li>
+          <li><a href="/bulk-upload"><span data-l="fr">Envoyez jusqu'à 20 fichiers d'un coup</span><span data-l="en">Upload up to 20 files at once</span></a></li>
+          <li><a href="/how-it-works#links"><span data-l="fr">Des liens courts à votre nom de domaine</span><span data-l="en">Short links on our own domain</span></a></li>
+          <li><a href="/how-it-works#bbcode"><span data-l="fr">BBCode pour vos forums préférés</span><span data-l="en">BBCode for your favorite forums</span></a></li>
+          <li><a href="/my-images"><span data-l="fr">Vos liens gardés sur ce PC</span><span data-l="en">Your links kept on this PC</span></a></li>
+        </ul>
+      </div>
+      <div class="encart">
+        <a class="encart-visuel" href="/how-it-works" aria-label="Comment ça marche / How it works"><img src="/papillon.svg" alt=""></a>
+        <div>
+          <a href="/how-it-works" class="encart-titre"><span data-l="fr">Comment ça marche ?</span><span data-l="en">How does it work?</span></a>
+          <p><span data-l="fr">1. Choisissez vos images.<br>2. On les envoie en ligne.<br>3. Copiez le lien et partagez !</span><span data-l="en">1. Pick your images.<br>2. We put them online.<br>3. Copy the link and share!</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="carte blog">
+      <h2 class="blog-rubrique"><span data-l="fr">Le blog ImageShack</span><span data-l="en">ImageShack blog</span></h2>
+      <a class="blog-billet" href="/thanks">
+        <img src="/we-mini.jpg" width="120" height="90" alt="L'équipe ImageShack / The ImageShack team" loading="lazy">
+        <span class="blog-corps">
+          <span class="blog-date"><span data-l="fr">31 octobre 2014</span><span data-l="en">October 31, 2014</span></span>
+          <span class="blog-titre"><span data-l="fr">Merci d'avoir fait partie de l'aventure</span><span data-l="en">Thank you for being part of it</span></span>
+          <span class="blog-resume"><span data-l="fr">Après toutes ces années de photos de vacances, de captures d'écran et de GIF partagés sur vos forums, ImageShack tire sa révérence. Un dernier mot de toute l'équipe.</span><span data-l="en">After all these years of holiday photos, screenshots and GIFs shared on your forums, ImageShack is taking its final bow. A last word from the whole team.</span></span>
+          <span class="blog-suite"><span data-l="fr">Lire la suite</span><span data-l="en">Read more</span> &#9656;</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="carte duo">
+      <div>
+        <h2 class="titre-orange"><span data-l="fr">Nouveau sur ImageShack</span><span data-l="en">New on ImageShack</span></h2>
+        <ul class="puces">
+          <li><a href="/how-it-works#page"><span data-l="fr">Une page à vous pour chaque image</span><span data-l="en">A page of its own for every image</span></a></li>
+          <li><a href="/upload-screenshot"><span data-l="fr">Collez une capture avec Ctrl+V</span><span data-l="en">Paste a screenshot with Ctrl+V</span></a></li>
+          <li><a href="/#url" data-focus-url><span data-l="fr">Envoyez une image depuis le Web</span><span data-l="en">Upload an image from the Web</span></a></li>
+        </ul>
+      </div>
+      <div>
+        <h2 class="titre-orange"><span data-l="fr">Bon à savoir</span><span data-l="en">Good to know</span></h2>
+        <ul class="puces">
+          <li><a href="/help#duration"><span data-l="fr">Combien de temps restent mes images ?</span><span data-l="en">How long do my images stay online?</span></a></li>
+          <li><a href="/help#delete"><span data-l="fr">Comment supprimer une image ?</span><span data-l="en">How do I delete an image?</span></a></li>
+          <li><a href="/terms"><span data-l="fr">Ce qui est interdit</span><span data-l="en">What is not allowed</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <aside id="col-droite"></aside>
+</main>
+
+<div id="bas"></div>
+<div id="voile-depot" aria-hidden="true"><div><span data-l="fr">Lâchez vos fichiers ici</span><span data-l="en">Drop your files here</span></div></div>
+
+<template id="tpl-envoi">
+  <li class="envoi">
+    <div class="envoi-vignette"><img alt=""></div>
+    <div class="envoi-corps">
+      <div class="envoi-nom"></div>
+      <div class="barre"><div></div></div>
+      <div class="envoi-etat"><span data-l="fr">En attente...</span><span data-l="en">Waiting...</span></div>
+      <div class="envoi-liens" hidden></div>
+    </div>
+  </li>
+</template>
+
+<script src="/commun.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>

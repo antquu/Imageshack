@@ -1,0 +1,6 @@
+# ImageShack
+User-agent: *
+Allow: /
+Disallow: /noelshack/
+
+Sitemap: https://imageshack.vercel.app/sitemap.xml

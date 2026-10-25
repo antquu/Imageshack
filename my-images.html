@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr" data-titre-en="My images - ImageShack" data-description-en="The images you uploaded from this browser, with all their links.">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="author" content="antquu">
+  <meta name="robots" content="noindex, follow">
+  <title>Mes images - ImageShack</title>
+  <meta name="description" content="Les images que vous avez envoyées depuis ce navigateur, avec tous leurs liens.">
+  <link rel="icon" href="/papillon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/langue.js"></script>
+</head>
+<body>
+<div id="haut"></div>
+
+<main class="page" id="contenu">
+  <aside id="col-gauche"></aside>
+
+  <section id="col-centre">
+    <div class="carte">
+      <div class="titre-section" id="all">
+        <h1 class="titre-section-h"><span data-l="fr">Mes images</span><span data-l="en">My images</span> (<span id="nb-images">0</span>)</h1>
+        <span class="titre-actions">
+          <a href="#" data-action="copier-histo"><span data-l="fr">Copier tous les liens</span><span data-l="en">Copy all links</span></a> |
+          <a href="#" data-action="vider-histo"><span data-l="fr">Vider l'historique</span><span data-l="en">Clear history</span></a>
+        </span>
+      </div>
+      <p class="intro"><span data-l="fr">Les images que vous avez envoyées depuis ce navigateur. Cette liste est gardée uniquement sur ce PC : elle n'est envoyée nulle part.</span><span data-l="en">The images you uploaded from this browser. This list is only kept on this PC: it is never sent anywhere.</span></p>
+      <ul id="liste-histo"></ul>
+      <div id="histo-vide" class="vide-grand" hidden>
+        <p><span data-l="fr">Vous n'avez encore envoyé aucune image depuis ce navigateur.</span><span data-l="en">You haven't uploaded any images from this browser yet.</span></p>
+        <a href="/#upload" class="btn-bleu"><span data-l="fr">Envoyer une image</span><span data-l="en">Upload an image</span></a>
+      </div>
+    </div>
+  </section>
+
+  <aside id="col-droite"></aside>
+</main>
+
+<div id="bas"></div>
+
+<script src="/commun.js"></script>
+<script>
+(() => {
+  const t = IS.t;
+  const liste = document.getElementById('liste-histo');
+
+  function afficher() {
+    const h = IS.lireHisto();
+    document.getElementById('nb-images').textContent = h.length;
+    document.getElementById('histo-vide').hidden = h.length > 0;
+    liste.replaceChildren(...h.map((img) => {
+      const l = IS.liens(img);
+      const li = document.createElement('li');
+      li.className = 'envoi ok';
+
+      const vign = document.createElement('a');
+      vign.className = 'envoi-vignette';
+      vign.href = l.page;
+      vign.append(IS.vignette(img));
+
+      const corps = document.createElement('div');
+      corps.className = 'envoi-corps';
+      const nom = document.createElement('div');
+      nom.className = 'envoi-nom';
+      nom.textContent = l.nom;
+      const date = document.createElement('span');
+      date.className = 'envoi-date';
+      date.textContent = img.date
+        ? t(' — envoyée le ', ' — uploaded on ') + new Date(img.date).toLocaleString(t('fr-FR', 'en-US'), { dateStyle: 'short', timeStyle: 'short' })
+        : '';
+      nom.append(date);
+      const liens = document.createElement('div');
+      liens.className = 'envoi-liens';
+      liens.append(IS.champsLiens(img));
+      const actions = document.createElement('p');
+      actions.className = 'envoi-actions';
+      const voir = document.createElement('a');
+      voir.href = l.page;
+      voir.textContent = t('Voir la page', 'View page');
+      const retirer = document.createElement('a');
+      retirer.href = '#';
+      retirer.textContent = t("Retirer de l'historique", 'Remove from history');
+      retirer.addEventListener('click', (e) => { e.preventDefault(); IS.retirerHisto(img.url); });
+      actions.append(voir, ' | ', retirer);
+
+      corps.append(nom, liens, actions);
+      li.append(vign, corps);
+      return li;
+    }));
+  }
+
+  window.addEventListener('imageshack:histo', afficher);
+  afficher();
+})();
+</script>
+</body>
+</html>

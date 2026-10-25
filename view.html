@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr" data-titre-en="Image - ImageShack" data-description-en="An image or video hosted with ImageShack.">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="author" content="antquu">
+  <meta name="robots" content="noindex, follow">
+  <title>Image - ImageShack</title>
+  <meta name="description" content="Une image ou une vidéo hébergée avec ImageShack.">
+  <link rel="icon" href="/papillon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/langue.js"></script>
+</head>
+<body>
+<div id="haut"></div>
+
+<main class="page" id="contenu">
+  <aside id="col-gauche"></aside>
+
+  <section id="col-centre">
+    <div class="carte" id="carte-image" hidden>
+      <div class="titre-section">
+        <h1 class="titre-section-h" id="titre-image">Image</h1>
+        <span class="titre-actions"><a href="#" id="lien-original" target="_blank" rel="noopener"><span data-l="fr">Taille réelle</span><span data-l="en">Full size</span></a> | <a href="/#upload"><span data-l="fr">Envoyer un fichier</span><span data-l="en">Upload a file</span></a></span>
+      </div>
+      <div class="visionneuse"><a id="lien-image" href="#" target="_blank" rel="noopener"><img id="image" alt=""></a></div>
+      <p class="infos-image" id="infos-image"></p>
+      <div class="envoi-liens bloc-liens" id="liens-image"></div>
+    </div>
+
+    <div class="carte" id="carte-erreur" hidden>
+      <h1 class="titre-section-simple"><span data-l="fr">Fichier introuvable</span><span data-l="en">File not found</span></h1>
+      <div class="texte">
+        <p><span data-l="fr">Ce lien ne correspond à aucune image ni vidéo. Vérifiez qu'il a été copié en entier.</span><span data-l="en">This link doesn't match any image or video. Check that it was copied in full.</span></p>
+        <p><a href="/#upload" class="btn-bleu"><span data-l="fr">Envoyer une image</span><span data-l="en">Upload an image</span></a></p>
+      </div>
+    </div>
+  </section>
+
+  <aside id="col-droite"></aside>
+</main>
+
+<div id="bas"></div>
+
+<script src="/commun.js"></script>
+<script src="/lecteur.js"></script>
+<script>
+(() => {
+  const t = IS.t;
+  const $ = (id) => document.getElementById(id);
+  // /v/c/abc123.mp4 (Catbox) or /v/2026/43/7/123-name.png (NoelShack)
+  const brut = location.pathname.startsWith('/v/')
+    ? decodeURIComponent(location.pathname.slice(3))
+    : new URLSearchParams(location.search).get('i') || '';
+  const erreur = () => {
+    $('carte-image').hidden = true;
+    $('carte-erreur').hidden = false;
+  };
+
+  let img;
+  let infos;
+  if (brut.startsWith('c/') && IS.CATBOX_OK.test(brut.slice(2))) {
+    const url = 'https://files.catbox.moe/' + brut.slice(2);
+    // The original name and thumbnail are only known if the upload came from this browser
+    const connu = IS.lireHisto().find((x) => x.url === url) || {};
+    img = { url, nom: connu.nom, vignette: connu.vignette, type: IS.EXT_VIDEO.test(url) ? 'video' : 'image' };
+    infos = t('Hébergé sur Catbox', 'Hosted on Catbox');
+  } else if (IS.CHEMIN_OK.test(brut)) {
+    img = {
+      url: 'https://image.noelshack.com/fichiers/' + brut,
+      mini: 'https://image.noelshack.com/minis/' + brut,
+    };
+    const [annee, semaine] = brut.split('/');
+    infos = t(
+      `Envoyée la semaine ${semaine} de ${annee} · hébergée sur NoelShack`,
+      `Uploaded in week ${semaine} of ${annee} · hosted on NoelShack`,
+    );
+  } else {
+    erreur();
+    return;
+  }
+
+  const l = IS.liens(img);
+  document.title = l.nom + ' - ImageShack';
+  $('titre-image').textContent = l.nom;
+  $('lien-original').href = l.original;
+  $('lien-image').href = l.original;
+
+  if (l.video) {
+    // files.catbox.moe sends X-Frame-Options: DENY, so the file is played with <video> instead of an iframe
+    const lecteur = IS.lecteurVideo({
+      src: l.original,
+      poster: l.mini,
+      nom: l.nom,
+      // Formats the browser can't play (MKV, AVI...) get an "open" button instead
+      surErreur: (el) => el.replaceWith(tuileOuvrir()),
+    });
+    function tuileOuvrir() {
+      const tuile = document.createElement('a');
+      tuile.className = 'video-catbox';
+      tuile.href = l.direct;
+      tuile.target = '_blank';
+      tuile.rel = 'noopener';
+      if (l.mini) {
+        const im = document.createElement('img');
+        im.src = l.mini;
+        im.alt = '';
+        tuile.append(im);
+      }
+      const txt = document.createElement('span');
+      txt.className = 'video-catbox-txt';
+      txt.textContent = t('▶ Ouvrir la vidéo', '▶ Open the video');
+      tuile.append(txt);
+      return tuile;
+    }
+    $('lien-image').replaceWith(lecteur);
+    $('lien-original').href = l.direct;
+    $('lien-original').querySelector('[data-l="fr"]').textContent = 'Lien brut';
+    $('lien-original').querySelector('[data-l="en"]').textContent = 'Raw link';
+  } else {
+    const image = $('image');
+    image.src = l.hebergeur === 'catbox' ? l.original : l.direct;
+    image.alt = l.nom;
+    image.addEventListener('error', erreur);
+    IS.chargerCommeModem(image);
+  }
+
+  $('infos-image').textContent = infos;
+  $('liens-image').append(IS.champsLiens(img));
+  $('carte-image').hidden = false;
+})();
+</script>
+</body>
+</html>

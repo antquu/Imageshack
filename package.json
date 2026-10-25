@@ -1,0 +1,20 @@
+{
+  "name": "imageshack",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Free image and video hosting with a mid-2000s web portal look.",
+  "author": "antquu (https://github.com/antquu)",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/antquu/Imageshack.git"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "node dev-server.cjs",
+    "build": "node scripts/seo.cjs && node scripts/pubs.cjs"
+  },
+  "dependencies": {
+    "@vercel/functions": "3.9.11"
+  }
+}

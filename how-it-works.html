@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr" data-titre-en="How it works - ImageShack" data-description-en="How ImageShack works: upload your images in 3 steps and get short links, BBCode and HTML. No account, no database.">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="author" content="antquu">
+  <title>Comment ça marche - ImageShack</title>
+  <meta name="description" content="Comment marche ImageShack : envoyez vos images en 3 étapes et recevez liens courts, BBCode et HTML. Sans compte ni base de données.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ImageShack">
+  <meta property="og:title" content="Comment ça marche - ImageShack">
+  <meta property="og:description" content="Comment marche ImageShack : envoyez vos images en 3 étapes et recevez liens courts, BBCode et HTML. Sans compte ni base de données.">
+  <link rel="icon" href="/papillon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/langue.js"></script>
+</head>
+<body>
+<div id="haut"></div>
+
+<main class="page" id="contenu">
+  <aside id="col-gauche"></aside>
+
+  <section id="col-centre">
+    <div class="carte">
+      <h1 class="titre-page"><span data-l="fr">Comment ça marche ?</span><span data-l="en">How does it work?</span></h1>
+      <ol class="etapes" data-l="fr">
+        <li><b>1</b><span><strong>Choisissez vos images ou vidéos</strong>Cliquez sur « Parcourir... », glissez-les dans la page ou collez une capture avec Ctrl+V.</span></li>
+        <li><b>2</b><span><strong>On les met en ligne</strong>Chaque fichier est envoyé sur Catbox (ou sur NoelShack si Catbox ne répond pas). Une barre de progression vous montre où ça en est.</span></li>
+        <li><b>3</b><span><strong>Copiez et partagez</strong>Vous recevez tout de suite plusieurs liens, prêts à coller sur un forum, un blog ou par message.</span></li>
+      </ol>
+      <ol class="etapes" data-l="en">
+        <li><b>1</b><span><strong>Pick your images or videos</strong>Click "Browse...", drag them onto the page or paste a screenshot with Ctrl+V.</span></li>
+        <li><b>2</b><span><strong>We put them online</strong>Each file is sent to Catbox (or to NoelShack if Catbox doesn't respond). A progress bar shows you how it's going.</span></li>
+        <li><b>3</b><span><strong>Copy and share</strong>You instantly get several links, ready to paste on a forum, a blog or in a message.</span></li>
+      </ol>
+      <p class="texte"><a href="/#upload" class="btn-bleu"><span data-l="fr">Envoyer une image maintenant</span><span data-l="en">Upload an image now</span></a></p>
+    </div>
+
+    <div class="carte">
+      <h2 class="titre-section-simple" id="links"><span data-l="fr">Les liens que vous recevez</span><span data-l="en">The links you get</span></h2>
+      <div class="texte">
+        <h3 id="short-link"><span data-l="fr">Lien brut</span><span data-l="en">Raw link</span> <sup class="new">NEW</sup></h3>
+        <p><span data-l="fr">Le fichier lui-même, image ou vidéo, sur l'adresse d'ImageShack. Collez-le partout où l'on attend une image ou une vidéo.</span><span data-l="en">The file itself, image or video, on ImageShack's address. Paste it anywhere an image or video is expected.</span></p>
+        <pre class="exemple">https://<span class="js-domaine">imageshack</span>/c/4jvgxe.png   (Catbox)
+https://<span class="js-domaine">imageshack</span>/i/2026/43/7/1792958618-vacances.png   (NoelShack)</pre>
+
+        <h3 id="page"><span data-l="fr">Page ImageShack</span><span data-l="en">ImageShack page</span></h3>
+        <p><span data-l="fr">Une page aux couleurs d'ImageShack qui affiche l'image, ou lit la vidéo, avec tous ses liens. Pratique à envoyer à un ami.</span><span data-l="en">An ImageShack-styled page that shows the image, or plays the video, with all its links. Handy to send to a friend.</span></p>
+        <pre class="exemple">https://<span class="js-domaine">imageshack</span>/v/c/4jvgxe.png</pre>
+
+        <h3 id="bbcode"><span data-l="fr">Forum (BBCode)</span><span data-l="en">Forum (BBCode)</span></h3>
+        <p><span data-l="fr">Pour les forums : affiche l'image, cliquable, qui mène à sa page. Pour une vidéo, c'est un lien vers sa page.</span><span data-l="en">For forums: shows the image, clickable, leading to its page. For a video, it's a link to its page.</span></p>
+        <pre class="exemple">[url=…/v/2026/43/7/…png][img]…/m/2026/43/7/…png[/img][/url]</pre>
+
+        <h3 id="html"><span data-l="fr">Site / blog (HTML)</span><span data-l="en">Website / blog (HTML)</span></h3>
+        <p><span data-l="fr">Le même principe en HTML, pour un blog ou une page perso.</span><span data-l="en">Same idea in HTML, for a blog or a personal page.</span></p>
+        <pre class="exemple">&lt;a href="…/v/…"&gt;&lt;img src="…/m/…" alt="…"&gt;&lt;/a&gt;</pre>
+
+        <h3 id="thumbnails"><span data-l="fr">Miniatures</span><span data-l="en">Thumbnails</span></h3>
+        <p><span data-l="fr">Les images envoyées sur NoelShack ont une version réduite, à l'adresse <code>/m/…</code>. Pour une vidéo, ImageShack tire une petite image du fichier avant l'envoi et la garde dans « Mes images ».</span><span data-l="en">Images sent to NoelShack have a smaller version, at <code>/m/…</code>. For a video, ImageShack takes a small picture from the file before uploading and keeps it in "My images".</span></p>
+
+        <h3 id="noelshack"><span data-l="fr">Lien Catbox ou NoelShack</span><span data-l="en">Catbox or NoelShack link</span></h3>
+        <p><span data-l="fr">L'adresse d'origine chez l'hébergeur. Sur les forums de jeuxvideo.com, seul un lien NoelShack s'affiche.</span><span data-l="en">The original address at the host. On the jeuxvideo.com forums, only a NoelShack link is displayed.</span></p>
+      </div>
+    </div>
+
+    <div class="carte">
+      <h2 class="titre-section-simple" id="no-database"><span data-l="fr">Pourquoi pas de base de données ?</span><span data-l="en">Why no database?</span></h2>
+      <div class="texte" data-l="fr">
+        <p>ImageShack ne stocke rien. Le lien court contient directement le nom du fichier chez l'hébergeur. Pour Catbox, <code>/c/…</code> va chercher le fichier sur files.catbox.moe et le renvoie. Pour NoelShack, <code>/i/…</code> va chercher la même image sur NoelShack et la renvoie.</p>
+        <p>Résultat : aucun compte, aucune base de données, et vos liens marchent tant que le fichier existe chez l'hébergeur.</p>
+      </div>
+      <div class="texte" data-l="en">
+        <p>ImageShack stores nothing. The short link directly contains the file's name at the host. For Catbox, <code>/c/…</code> fetches the file from files.catbox.moe and sends it back. For NoelShack, <code>/i/…</code> fetches the same image from NoelShack and sends it back.</p>
+        <p>The result: no account, no database, and your links keep working as long as the file exists at the host.</p>
+      </div>
+    </div>
+  </section>
+
+  <aside id="col-droite"></aside>
+</main>
+
+<div id="bas"></div>
+
+<script src="/commun.js"></script>
+<script>
+  document.querySelectorAll('.js-domaine').forEach((el) => { el.textContent = location.host; });
+</script>
+</body>
+</html>
