@@ -12,6 +12,14 @@ const path = require('path');
 const { Readable } = require('stream');
 const { listerPubs } = require('./scripts/pubs.cjs');
 
+// COBALT_API_URL and COBALT_API_KEY can be set in .env.local (same as on Vercel)
+try {
+  for (const ligne of fs.readFileSync(path.join(__dirname, '.env.local'), 'utf8').split(/\r?\n/)) {
+    const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(ligne);
+    if (m && !(m[1] in process.env)) process.env[m[1]] = m[2].replace(/^(['"])(.*)\1$/, '$2');
+  }
+} catch { /* no .env.local */ }
+
 const PORT = process.env.PORT || 3000;
 const PAYS = (process.env.PAYS || '').toUpperCase().replace(/[^A-Z0-9-]/g, '');
 const ROOT = __dirname;
@@ -35,6 +43,7 @@ const TYPES = {
 const PROXYS = [
   [/^\/c\/([a-z0-9]+\.[a-z0-9]+)$/i, 'https://files.catbox.moe/$1'],
   [/^\/catbox\/api\.php$/, 'https://catbox.moe/user/api.php'],
+pi.php$//d
   [/^\/noelshack\/(envoi\.json|telecharger\.json)/, 'https://www.noelshack.com/$1'],
   [/^\/i\/(.+)/, 'https://image.noelshack.com/fichiers/$1'],
   [/^\/m\/(.+)/, 'https://image.noelshack.com/minis/$1'],
@@ -72,6 +81,30 @@ async function proxy(req, res, target) {
   }
 }
 
+async function relaisCobalt(req, res) {
+  const json = (status, corps) => {
+    res.writeHead(status, { 'content-type': 'application/json' });
+    res.end(JSON.stringify(corps));
+  };
+  const cible = process.env.COBALT_API_URL;
+  const cle = process.env.COBALT_API_KEY;
+  if (!cible || !cle) return json(503, { status: 'error', error: { code: 'imageshack.not_configured' } });
+  if (req.method !== 'POST') return json(405, { status: 'error', error: { code: 'imageshack.method' } });
+  const chunks = [];
+  for await (const c of req) chunks.push(c);
+  try {
+    const r = await fetch(cible, {
+      method: 'POST',
+      headers: { accept: 'application/json', 'content-type': 'application/json', authorization: `Api-Key ${cle}` },
+      body: Buffer.concat(chunks),
+    });
+    res.writeHead(r.status, { 'content-type': r.headers.get('content-type') || 'application/json' });
+    res.end(Buffer.from(await r.arrayBuffer()));
+  } catch {
+    json(502, { status: 'error', error: { code: 'imageshack.unreachable' } });
+  }
+}
+
 function servir(res, file, status = 200) {
   fs.readFile(file, (err, data) => {
     if (err) {
@@ -87,6 +120,8 @@ function servir(res, file, status = 200) {
 
 http.createServer((req, res) => {
   const [chemin, query = ''] = req.url.split('?');
+  // Same relay as middleware.js: Cobalt with the API key added on the server side
+  if (chemin === '/youtube/api') return relaisCobalt(req, res);
   // Ad list built on the fly, so new images in pubs/ show up without a rebuild
   if (chemin === '/pubs/index.json') {
     res.writeHead(200, { 'content-type': TYPES['.json'] });

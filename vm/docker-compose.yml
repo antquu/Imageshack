@@ -1,0 +1,45 @@
+# ImageShack by antquu (github.com/antquu)
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Cobalt instance for the YouTube downloader, published with Tailscale Funnel
+# on port 8443. See vm/README.md.
+
+services:
+  cobalt:
+    image: ghcr.io/imputnet/cobalt:11
+    init: true
+    read_only: true
+    restart: unless-stopped
+    container_name: cobalt
+    ports:
+      - 127.0.0.1:9000:9000/tcp
+    environment:
+      API_URL: "${COBALT_PUBLIC_URL}"
+      API_KEY_URL: "file:///keys.json"
+      API_AUTH_REQUIRED: 1
+      YOUTUBE_SESSION_SERVER: "http://yt-session-generator:8080/"
+      DURATION_LIMIT: 3600
+    volumes:
+      - ./keys.json:/keys.json:ro
+    depends_on:
+      - yt-session-generator
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+
+  yt-session-generator:
+    image: ghcr.io/imputnet/yt-session-generator:webserver
+    init: true
+    restart: unless-stopped
+    container_name: yt-session-generator
+    labels:
+      - com.centurylinklabs.watchtower.scope=cobalt
+
+  watchtower:
+    image: ghcr.io/containrrr/watchtower
+    restart: unless-stopped
+    command: --cleanup --scope cobalt --interval 900 --include-restarting
+    environment:
+      # watchtower defaults to an API version that Docker 29 no longer accepts
+      DOCKER_API_VERSION: "1.44"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -23,6 +23,7 @@ const PAGES = [
   ['/upload-video', '0.8', 'monthly'],
   ['/upload-screenshot', '0.8', 'monthly'],
   ['/bulk-upload', '0.8', 'monthly'],
+  ['/youtube-downloader', '0.8', 'monthly'],
   ['/how-it-works', '0.6', 'monthly'],
   ['/help', '0.6', 'monthly'],
   ['/terms', '0.3', 'yearly'],

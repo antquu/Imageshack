@@ -102,7 +102,7 @@ ${BANDEAU}
       <li><a href="/upload-video">${t('Héberger une vidéo', 'Upload a video')}</a> <sup class="new">NEW</sup></li>
       <li><a href="/upload-screenshot">${t('Héberger une capture', 'Upload a screenshot')}</a></li>
       <li><a href="/bulk-upload">${t('Envoi multiple', 'Bulk upload')}</a></li>
-      <li><a href="/how-it-works#links">${t('Liens courts', 'Short links')}</a> <sup class="new">NEW</sup></li>
+      <li><a href="/youtube-downloader">YouTube Downloader</a> <sup class="new">NEW</sup></li>
       <li><a href="/how-it-works#bbcode">${t('Codes BBCode', 'BBCode')}</a></li>
       <li><a href="/how-it-works#html">${t('Codes HTML', 'HTML code')}</a></li>
       <li><a href="/how-it-works#thumbnails">${t('Miniatures', 'Thumbnails')}</a></li>
@@ -149,6 +149,7 @@ ${BANDEAU}
     <li><a href="/upload-screenshot">${t('Héberger une capture', 'Upload a screenshot')}</a></li>
     <li><a href="/bulk-upload">${t('Envoi multiple', 'Bulk upload')}</a></li>
     <li><a href="/#url" data-focus-url>${t('Envoyer depuis le Web', 'Upload from the Web')}</a></li>
+    <li><a href="/youtube-downloader">YouTube Downloader</a></li>
     <li><a href="/how-it-works#bbcode">${t('Partager sur un forum', 'Share on a forum')}</a></li>
     <li><a href="/how-it-works#html">${t('Partager sur un blog', 'Share on a blog')}</a></li>
     <li><a href="/help">${t('Questions fréquentes', 'FAQ')}</a></li>

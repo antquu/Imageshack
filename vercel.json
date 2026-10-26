@@ -4,9 +4,6 @@
   "trailingSlash": false,
   "rewrites": [
     { "source": "/c/:fichier", "destination": "https://files.catbox.moe/:fichier" },
-    { "source": "/catbox/api.php", "destination": "https://catbox.moe/user/api.php" },
-    { "source": "/noelshack/envoi.json", "destination": "https://www.noelshack.com/envoi.json" },
-    { "source": "/noelshack/telecharger.json", "destination": "https://www.noelshack.com/telecharger.json" },
     { "source": "/i/:chemin*", "destination": "https://image.noelshack.com/fichiers/:chemin*" },
     { "source": "/m/:chemin*", "destination": "https://image.noelshack.com/minis/:chemin*" },
     { "source": "/v/:chemin*", "destination": "/view" },

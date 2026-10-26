@@ -3,16 +3,67 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-// Vercel Routing Middleware: stores the visitor's country (e.g. FR, US, CA-QC)
-// in the is_pays cookie, which langue.js reads to pick French or English.
-import { geolocation, next } from '@vercel/functions';
+// Vercel Routing Middleware.
+// - /noelshack/* is forwarded to NoelShack with a plain fetch: a vercel.json rewrite
+//   would add an X-Forwarded-Host header, and NoelShack answers 404 to those requests.
+// - /youtube/api is relayed to the private Cobalt instance with its API key added,
+//   so the key never reaches the browser (COBALT_API_URL and COBALT_API_KEY env vars).
+// - Every page gets the is_pays cookie (e.g. FR, US, CA-QC), which langue.js reads
+//   to pick French or English.
+import { geolocation, next, rewrite } from '@vercel/functions';
 
 export const config = {
-  // Pages only: skip proxied files, uploads and root assets
-  matcher: '/((?!i/|m/|c/|catbox/|noelshack/|pubs/|[^/]+\\.(?:css|js|svg|png|jpg|ico|txt|xml|json)$).*)',
+  // Pages, /noelshack/* and /youtube/api: skip proxied files and root assets
+  matcher: '/((?!i/|m/|c/|pubs/|[^/]+\\.(?:css|js|svg|png|jpg|ico|txt|xml|json)$).*)',
 };
 
+const NOELSHACK = {
+  '/noelshack/envoi.json': 'https://www.noelshack.com/envoi.json',
+  '/noelshack/telecharger.json': 'https://www.noelshack.com/telecharger.json',
+};
+
+async function relaisNoelShack(request, cible) {
+  const url = new URL(request.url);
+  const entetes = { 'user-agent': 'Mozilla/5.0 (compatible; ImageShack)' };
+  const type = request.headers.get('content-type');
+  if (type) entetes['content-type'] = type;
+  const avecCorps = request.method !== 'GET' && request.method !== 'HEAD';
+  const r = await fetch(cible + url.search, {
+    method: request.method,
+    headers: entetes,
+    body: avecCorps ? await request.arrayBuffer() : undefined,
+  });
+  return new Response(r.body, {
+    status: r.status,
+    headers: { 'content-type': r.headers.get('content-type') || 'application/json' },
+  });
+}
+
+function erreurCobalt(code, status) {
+  return new Response(JSON.stringify({ status: 'error', error: { code } }), {
+    status,
+    headers: { 'content-type': 'application/json' },
+  });
+}
+
+function relaisCobalt(request) {
+  const cible = process.env.COBALT_API_URL;
+  const cle = process.env.COBALT_API_KEY;
+  if (!cible || !cle) return erreurCobalt('imageshack.not_configured', 503);
+  if (request.method !== 'POST') return erreurCobalt('imageshack.method', 405);
+
+  const entetes = new Headers();
+  entetes.set('accept', 'application/json');
+  entetes.set('content-type', 'application/json');
+  entetes.set('authorization', `Api-Key ${cle}`);
+  return rewrite(new URL(cible), { request: { headers: entetes } });
+}
+
 export default function middleware(request) {
+  const chemin = new URL(request.url).pathname;
+  if (NOELSHACK[chemin]) return relaisNoelShack(request, NOELSHACK[chemin]);
+  if (chemin === '/youtube/api') return relaisCobalt(request);
+
   const { country = '', countryRegion = '' } = geolocation(request);
   const pays = country.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);
   if (!pays) return next();

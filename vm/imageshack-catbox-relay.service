@@ -1,0 +1,23 @@
+# ImageShack by antquu (github.com/antquu)
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Unit]
+Description=ImageShack - Catbox upload relay
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /opt/imageshack/catbox-relay.mjs
+Environment=PORT=9100
+Environment=ALLOWED_ORIGINS=https://imageshack.vercel.app,http://localhost:3000
+Restart=always
+RestartSec=3
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+MemoryMax=300M
+
+[Install]
+WantedBy=multi-user.target

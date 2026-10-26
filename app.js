@@ -4,12 +4,14 @@
  */
 
 // Upload logic for the home page and the dedicated upload pages.
-// Files go to Catbox first (/catbox/api.php) and small images fall back to
-// NoelShack (/noelshack/envoi.json). Both are rewrites in vercel.json.
+// Files go to Catbox first (through the relay on the home VM) and small images
+// fall back to NoelShack (/noelshack/envoi.json, relayed by middleware.js).
 (() => {
   'use strict';
 
-  const CATBOX_URL = '/catbox/api.php';
+  // Catbox refuses uploads from Vercel's servers, so files go through a relay on
+  // the home VM (vm/catbox-relay.mjs), straight from the browser
+  const CATBOX_URL = 'https://googlant.tail33e15b.ts.net/catbox-relay';
   const NOELSHACK_ENVOI = '/noelshack/envoi.json';
   const NOELSHACK_URL = '/noelshack/telecharger.json?url=';
   const MO = 1024 * 1024;
@@ -97,6 +99,7 @@
   function lireCatbox(texte) {
     const r = String(texte || '').trim();
     if (/^https:\/\/files\.catbox\.moe\/[a-z0-9]+\.[a-z0-9]+$/i.test(r)) return r;
+    if (/invalid uploader/i.test(r)) throw new Error(t('Catbox refuse les envois venant du serveur du site.', 'Catbox refuses uploads coming from the site\'s server.'));
     throw new Error('Catbox : ' + (r.slice(0, 160) || t('réponse vide', 'empty response')));
   }
 

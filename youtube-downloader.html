@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr" data-titre-en="YouTube Downloader - ImageShack" data-description-en="Download a YouTube video as MP4 or its audio as MP3, for free and without signing up.">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light only">
+  <meta name="author" content="antquu">
+  <title>YouTube Downloader - ImageShack</title>
+  <meta name="description" content="Téléchargez une vidéo YouTube en MP4 ou sa bande-son en MP3, gratuitement et sans inscription.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="ImageShack">
+  <meta property="og:title" content="YouTube Downloader - ImageShack">
+  <meta property="og:description" content="Téléchargez une vidéo YouTube en MP4 ou sa bande-son en MP3, gratuitement et sans inscription.">
+  <link rel="icon" href="/papillon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/langue.js"></script>
+</head>
+<body>
+<div id="haut"></div>
+
+<main class="page" id="contenu">
+  <aside id="col-gauche"></aside>
+
+  <section id="col-centre">
+    <div class="carte yt">
+      <div class="yt-tete">
+        <img src="/youtube-logo.svg" alt="YouTube" width="160" height="63" class="yt-logo">
+        <h1 class="yt-titre">Downloader</h1>
+      </div>
+      <p class="yt-intro"><span data-l="fr">Collez le lien d'une vidéo YouTube pour la télécharger en MP4, ou n'en garder que le son en MP3.</span><span data-l="en">Paste a YouTube video link to download it as MP4, or keep only the sound as MP3.</span></p>
+
+      <form id="yt-form" class="yt-form" autocomplete="off">
+        <label for="yt-url" class="yt-label"><span data-l="fr">Lien de la vidéo :</span><span data-l="en">Video link:</span></label>
+        <div class="yt-ligne">
+          <input type="url" id="yt-url" required placeholder="https://www.youtube.com/watch?v=...">
+          <button type="submit" class="btn-orange yt-bouton" id="yt-bouton"><span data-l="fr">télécharger</span><span data-l="en">download</span></button>
+        </div>
+        <div class="yt-options">
+          <label><span data-l="fr">Format :</span><span data-l="en">Format:</span>
+            <select id="yt-mode">
+              <option value="auto" data-fr="Vidéo (MP4)" data-en="Video (MP4)">Vidéo (MP4)</option>
+              <option value="audio" data-fr="Audio seulement (MP3)" data-en="Audio only (MP3)">Audio seulement (MP3)</option>
+              <option value="mute" data-fr="Vidéo sans le son" data-en="Video without sound">Vidéo sans le son</option>
+            </select>
+          </label>
+          <label id="yt-qualite-bloc"><span data-l="fr">Qualité :</span><span data-l="en">Quality:</span>
+            <select id="yt-qualite">
+              <option value="1080">1080p</option>
+              <option value="720" selected>720p</option>
+              <option value="480">480p</option>
+              <option value="360">360p</option>
+              <option value="max" data-fr="La meilleure" data-en="Best available">La meilleure</option>
+            </select>
+          </label>
+        </div>
+      </form>
+
+      <div id="yt-apercu" class="yt-apercu" hidden>
+        <img id="yt-miniature" alt="" width="160" height="90">
+        <div class="yt-apercu-corps">
+          <div id="yt-etat" class="yt-etat" role="status" aria-live="polite"></div>
+          <div id="yt-roue" class="yt-roue" hidden aria-hidden="true"></div>
+          <div id="yt-resultat" class="yt-resultat" hidden></div>
+        </div>
+      </div>
+
+      <div class="yt-avertissement">
+        <p><span data-l="fr"><strong>À lire :</strong> téléchargez uniquement des vidéos dont vous avez les droits (les vôtres, ou celles sous licence libre). Les conditions de YouTube interdisent de télécharger les autres vidéos.</span><span data-l="en"><strong>Please note:</strong> only download videos you have the rights to (your own, or ones under a free license). YouTube's terms forbid downloading other videos.</span></p>
+        <p><span data-l="fr">ImageShack n'est pas affilié à YouTube. YouTube est une marque de Google LLC.</span><span data-l="en">ImageShack is not affiliated with YouTube. YouTube is a trademark of Google LLC.</span></p>
+      </div>
+    </div>
+  </section>
+
+  <aside id="col-droite"></aside>
+</main>
+
+<div id="bas"></div>
+<script src="/commun.js"></script>
+<script src="/youtube.js"></script>
+</body>
+</html>
