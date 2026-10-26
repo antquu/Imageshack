@@ -7,4 +7,3 @@ npm-debug.log*
 # secrets
 .env*
 !.env.example
-vm/keys.json

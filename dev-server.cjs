@@ -12,7 +12,7 @@ const path = require('path');
 const { Readable } = require('stream');
 const { listerPubs } = require('./scripts/pubs.cjs');
 
-// COBALT_API_URL and COBALT_API_KEY can be set in .env.local (same as on Vercel)
+// YT_API_URL and YT_API_KEY can be set in .env.local (same as on Vercel)
 try {
   for (const ligne of fs.readFileSync(path.join(__dirname, '.env.local'), 'utf8').split(/\r?\n/)) {
     const m = /^\s*([A-Z0-9_]+)\s*=\s*(.*?)\s*$/.exec(ligne);
@@ -81,13 +81,13 @@ async function proxy(req, res, target) {
   }
 }
 
-async function relaisCobalt(req, res) {
+async function relaisYoutube(req, res) {
   const json = (status, corps) => {
     res.writeHead(status, { 'content-type': 'application/json' });
     res.end(JSON.stringify(corps));
   };
-  const cible = process.env.COBALT_API_URL;
-  const cle = process.env.COBALT_API_KEY;
+  const cible = process.env.YT_API_URL;
+  const cle = process.env.YT_API_KEY;
   if (!cible || !cle) return json(503, { status: 'error', error: { code: 'imageshack.not_configured' } });
   if (req.method !== 'POST') return json(405, { status: 'error', error: { code: 'imageshack.method' } });
   const chunks = [];
@@ -120,8 +120,8 @@ function servir(res, file, status = 200) {
 
 http.createServer((req, res) => {
   const [chemin, query = ''] = req.url.split('?');
-  // Same relay as middleware.js: Cobalt with the API key added on the server side
-  if (chemin === '/youtube/api') return relaisCobalt(req, res);
+  // Same relay as middleware.js: the VM download service, with its API key added
+  if (chemin === '/youtube/api') return relaisYoutube(req, res);
   // Ad list built on the fly, so new images in pubs/ show up without a rebuild
   if (chemin === '/pubs/index.json') {
     res.writeHead(200, { 'content-type': TYPES['.json'] });

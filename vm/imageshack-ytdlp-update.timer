@@ -1,0 +1,12 @@
+# ImageShack by antquu (github.com/antquu)
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Unit]
+Description=ImageShack - update yt-dlp every day
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1h
+Persistent=true
+
+[Install]
+WantedBy=timers.target

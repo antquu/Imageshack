@@ -6,8 +6,8 @@
 // Vercel Routing Middleware.
 // - /noelshack/* is forwarded to NoelShack with a plain fetch: a vercel.json rewrite
 //   would add an X-Forwarded-Host header, and NoelShack answers 404 to those requests.
-// - /youtube/api is relayed to the private Cobalt instance with its API key added,
-//   so the key never reaches the browser (COBALT_API_URL and COBALT_API_KEY env vars).
+// - /youtube/api is relayed to the download service on the home VM with its API key
+//   added, so the key never reaches the browser (YT_API_URL and YT_API_KEY env vars).
 // - Every page gets the is_pays cookie (e.g. FR, US, CA-QC), which langue.js reads
 //   to pick French or English.
 import { geolocation, next, rewrite } from '@vercel/functions';
@@ -39,18 +39,18 @@ async function relaisNoelShack(request, cible) {
   });
 }
 
-function erreurCobalt(code, status) {
+function erreurYoutube(code, status) {
   return new Response(JSON.stringify({ status: 'error', error: { code } }), {
     status,
     headers: { 'content-type': 'application/json' },
   });
 }
 
-function relaisCobalt(request) {
-  const cible = process.env.COBALT_API_URL;
-  const cle = process.env.COBALT_API_KEY;
-  if (!cible || !cle) return erreurCobalt('imageshack.not_configured', 503);
-  if (request.method !== 'POST') return erreurCobalt('imageshack.method', 405);
+function relaisYoutube(request) {
+  const cible = process.env.YT_API_URL;
+  const cle = process.env.YT_API_KEY;
+  if (!cible || !cle) return erreurYoutube('imageshack.not_configured', 503);
+  if (request.method !== 'POST') return erreurYoutube('imageshack.method', 405);
 
   const entetes = new Headers();
   entetes.set('accept', 'application/json');
@@ -62,7 +62,7 @@ function relaisCobalt(request) {
 export default function middleware(request) {
   const chemin = new URL(request.url).pathname;
   if (NOELSHACK[chemin]) return relaisNoelShack(request, NOELSHACK[chemin]);
-  if (chemin === '/youtube/api') return relaisCobalt(request);
+  if (chemin === '/youtube/api') return relaisYoutube(request);
 
   const { country = '', countryRegion = '' } = geolocation(request);
   const pays = country.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 2);

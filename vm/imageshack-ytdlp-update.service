@@ -1,0 +1,9 @@
+# ImageShack by antquu (github.com/antquu)
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Keeps yt-dlp up to date: YouTube changes often and old versions stop working.
+[Unit]
+Description=ImageShack - update yt-dlp
+
+[Service]
+Type=oneshot
+ExecStart=/opt/imageshack/bin/yt-dlp -U

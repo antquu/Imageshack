@@ -16,7 +16,7 @@ I wanted to see how far a hosting site could go without a database of its own. I
 - Up to 20 files at once, uploaded one after the other with a progress bar per file.
 - Upload from a URL with the bar at the top of every page.
 - Dedicated pages for photos, GIFs, videos, screenshots and bulk uploads. They reuse the home page with a different title and file filter.
-- A YouTube downloader (MP4 or MP3), backed by a self-hosted [Cobalt](https://github.com/imputnet/cobalt) instance.
+- A YouTube downloader (MP4 or MP3), backed by [yt-dlp](https://github.com/yt-dlp/yt-dlp) on a home VM.
 
 **Links**
 - For each upload: a raw link, an ImageShack viewer page, BBCode for forums, HTML for blogs, and the original link at the host.
@@ -36,13 +36,13 @@ The look follows the MSN home page around 2010: blue gradient header, link grid,
 ```
 browser ──► static site (Vercel)
    │           ├─ /noelshack/*           ──► www.noelshack.com      (fallback upload, middleware.js)
-   │           ├─ /youtube/api           ──► Cobalt on the home VM  (middleware.js adds the API key)
+   │           ├─ /youtube/api           ──► YouTube service on the VM (middleware.js adds the API key)
    │           ├─ /c/<id>                ──► files.catbox.moe       (raw file, rewrite)
    │           └─ /i/<path>, /m/<path>   ──► image.noelshack.com    (raw file, thumbnail, rewrite)
    │
    └─────────► home VM (Tailscale Funnel)
                ├─ /catbox-relay          ──► catbox.moe/user/api.php (upload)
-               └─ :8443                   Cobalt (YouTube downloads)
+               └─ :8443                   YouTube service (yt-dlp): progress and finished files
 ```
 
 Neither Catbox nor NoelShack sends CORS headers, so the browser cannot read their responses directly. Each one also refuses something about Vercel:
@@ -89,9 +89,9 @@ Page text is written in both languages (`data-l="fr"` and `data-l="en"`) and CSS
 
 ### YouTube downloader
 
-The `/youtube-downloader` page sends the link to `/youtube/api`. `middleware.js` relays that request to a private Cobalt instance and adds its API key, so the key never reaches the browser. Cobalt answers with a signed tunnel link, and the browser downloads the file straight from the instance.
+The `/youtube-downloader` page sends the link to `/youtube/api`. `middleware.js` relays that request to a small service on the home VM (`vm/yt-service.mjs`) and adds its API key, so the key never reaches the browser. The service runs yt-dlp and ffmpeg, the page shows the progress, and the browser downloads the finished file straight from the VM. Files are deleted after 30 minutes.
 
-The official instance (`api.cobalt.tools`) is only meant for cobalt.tools itself and has YouTube disabled, so the project includes the setup for a private instance on a home VM, published with Tailscale Funnel: see [`vm/README.md`](vm/README.md). The site needs two environment variables, `COBALT_API_URL` and `COBALT_API_KEY`. Without them, the page shows an "unavailable" message.
+The setup is described in [`vm/README.md`](vm/README.md). The site needs two environment variables, `YT_API_URL` and `YT_API_KEY`. Without them, the page shows an "unavailable" message. I started with a self-hosted Cobalt instance, but it returned empty files for most recent videos, so I replaced it with yt-dlp.
 
 ### Ads
 
@@ -124,7 +124,7 @@ PAYS=FR npm run dev    # French
 ## Deploying on Vercel
 
 1. Import the GitHub repository in Vercel. No framework preset is needed.
-2. Optional: set `SITE_URL` to the production address (for example `https://imageshack.example.com`). Without it, the build uses the Vercel production domain. For the YouTube downloader, also set `COBALT_API_URL` and `COBALT_API_KEY` (see `vm/README.md`).
+2. Optional: set `SITE_URL` to the production address (for example `https://imageshack.example.com`). Without it, the build uses the Vercel production domain. For the YouTube downloader, also set `YT_API_URL` and `YT_API_KEY` (see `vm/README.md`).
 3. Deploy. `npm run build` generates `robots.txt` and `sitemap.xml` with the right domain (`scripts/seo.cjs`) and the ad list (`scripts/pubs.cjs`).
 
 To appear on Google, add the site to the [Google Search Console](https://search.google.com/search-console) and submit `/sitemap.xml`.
@@ -142,17 +142,17 @@ how-it-works.html, help.html, terms.html, privacy.html, sitemap.html, 404.html
 commun.js           shared layout (header, columns, footer), history, links, clipboard, toast
 app.js              upload logic (Catbox, NoelShack fallback, queue, drag and drop, paste)
 lecteur.js          custom video player
-youtube.js          YouTube downloader (calls Cobalt through /youtube/api)
+youtube.js          YouTube downloader (starts the download, follows its progress)
 langue.js           language selection, loaded before the page renders
 style.css           all styles
 
-middleware.js       Vercel routing middleware (country cookie, NoelShack and Cobalt relays)
+middleware.js       Vercel routing middleware (country cookie, NoelShack and YouTube relays)
 vercel.json         raw-link rewrites, clean URLs, cache headers
 dev-server.cjs      local server that mirrors vercel.json
 scripts/seo.cjs     generates robots.txt and sitemap.xml at build time
 scripts/pubs.cjs    lists the ad images of pubs/ in pubs/index.json
 pubs/               ad images, plus optional click targets in liens.json
-vm/                 home VM setup: Catbox relay and Cobalt instance
+vm/                 home VM services: Catbox relay and YouTube download service
 ```
 
 ## Known limits
@@ -168,7 +168,7 @@ vm/                 home VM setup: Catbox relay and Cobalt instance
 - File hosting by [Catbox](https://catbox.moe) and [NoelShack](https://www.noelshack.com). ImageShack is not affiliated with either.
 - Layout inspired by the MSN home page of 2005-2010. The butterfly logo is a tribute to the MSN butterfly; MSN is a trademark of Microsoft.
 - [GreLines](https://grelines.fr), another project of mine, for the default ad.
-- [Cobalt](https://github.com/imputnet/cobalt) by imput for the YouTube downloader backend. YouTube is a trademark of Google LLC, and ImageShack is not affiliated with it.
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp) and [FFmpeg](https://ffmpeg.org) for the YouTube downloader. YouTube is a trademark of Google LLC, and ImageShack is not affiliated with it.
 
 ## License
 

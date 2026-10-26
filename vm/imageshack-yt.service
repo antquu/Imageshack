@@ -1,0 +1,27 @@
+# ImageShack by antquu (github.com/antquu)
+# SPDX-License-Identifier: GPL-3.0-or-later
+[Unit]
+Description=ImageShack - YouTube download service (yt-dlp)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/node /opt/imageshack/yt-service.mjs
+# PUBLIC_URL and API_KEY live here (root only)
+EnvironmentFile=/etc/imageshack/yt.env
+Environment=PORT=9200
+Environment=ALLOWED_ORIGINS=https://imageshack.vercel.app,http://localhost:3000
+Environment=YTDLP=/opt/imageshack/bin/yt-dlp
+StateDirectory=imageshack-yt
+Restart=always
+RestartSec=3
+DynamicUser=yes
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+MemoryMax=800M
+
+[Install]
+WantedBy=multi-user.target

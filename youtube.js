@@ -4,8 +4,9 @@
  */
 
 // YouTube downloader page. The link is sent to /youtube/api, which middleware.js
-// relays to the private Cobalt instance on the home VM (see vm/README.md). Cobalt
-// answers with a tunnel link that the browser downloads straight from the VM.
+// relays to the download service on the home VM (vm/yt-service.mjs, yt-dlp) with its
+// API key. The service prepares the file, the page follows its progress, then the
+// browser downloads the file straight from the VM.
 (() => {
   'use strict';
 
@@ -51,6 +52,9 @@
   const MESSAGES = {
     'imageshack.not_configured': ["Le téléchargeur n'est pas encore branché à son serveur.", "The downloader isn't connected to its server yet."],
     'imageshack.unreachable': ['Le serveur de téléchargement ne répond pas. Réessayez plus tard.', "The download server isn't responding. Try again later."],
+    'imageshack.job_not_found': ['Ce téléchargement a expiré. Relancez-le.', 'This download has expired. Start it again.'],
+    'imageshack.timeout': ['La préparation prend trop de temps. Réessayez avec une qualité plus basse.', 'Preparing the file is taking too long. Try a lower quality.'],
+    'error.api.fetch.fail': ["Impossible de récupérer cette vidéo pour le moment. Réessayez plus tard.", "Couldn't fetch this video right now. Try again later."],
     'error.api.link.invalid': ["Ce lien n'est pas reconnu. Vérifiez que c'est bien une vidéo YouTube.", "This link isn't recognized. Check that it's a YouTube video."],
     'error.api.link.unsupported': ["Ce lien n'est pas reconnu. Vérifiez que c'est bien une vidéo YouTube.", "This link isn't recognized. Check that it's a YouTube video."],
     'error.api.content.video.unavailable': ["Cette vidéo n'est pas disponible.", 'This video is not available.'],
@@ -87,6 +91,23 @@
     if (nom) a.download = nom;
     a.textContent = libelle;
     return a;
+  }
+
+  // The service prepares the file on the VM: poll its progress until it's ready
+  const pause = (ms) => new Promise((ok) => setTimeout(ok, ms));
+  async function suivreTravail(statusUrl) {
+    const fin = Date.now() + 16 * 60 * 1000;
+    while (Date.now() < fin) {
+      let e;
+      try { e = await (await fetch(statusUrl, { cache: 'no-store' })).json(); } catch { e = null; }
+      if (e && e.state === 'done') return { status: 'tunnel', url: e.url, filename: e.filename };
+      if (e && (e.state === 'error' || e.status === 'error')) return { status: 'error', error: { code: e.code || (e.error && e.error.code) } };
+      if (e && e.state === 'queued') afficherEtat(t("En file d'attente...", 'Waiting in line...'), true);
+      else if (e && e.state === 'convert') afficherEtat(t('Assemblage du fichier...', 'Putting the file together...'), true);
+      else if (e) afficherEtat(t('Préparation de la vidéo... ', 'Preparing the video... ') + (e.progress || 0) + t(' %', '%'), true);
+      await pause(1500);
+    }
+    return { status: 'error', error: { code: 'imageshack.timeout' } };
   }
 
   function afficherResultat(r) {
@@ -142,6 +163,7 @@
       });
       let r;
       try { r = await reponse.json(); } catch { r = { status: 'error', error: { code: 'imageshack.unreachable' } }; }
+      if (r.status === 'job' && r.statusUrl) r = await suivreTravail(r.statusUrl);
       afficherResultat(r);
     } catch {
       afficherResultat({ status: 'error', error: { code: 'imageshack.unreachable' } });
